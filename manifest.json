@@ -1,0 +1,25 @@
+{
+  "name": "আইওটি বন্যা পর্যবেক্ষণ ব্যবস্থা",
+  "short_name": "বন্যা মনিটর",
+  "description": "রিয়েল-টাইম বন্যা পর্যবেক্ষণ ও আগাম সতর্কীকরণ ব্যবস্থা",
+  "start_url": "/flood-monitoring-system/",
+  "scope": "/flood-monitoring-system/",
+  "display": "standalone",
+  "background_color": "#020b18",
+  "theme_color": "#00aaff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
