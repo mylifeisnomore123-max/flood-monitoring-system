@@ -888,16 +888,18 @@ body::after {
 
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="card">
-        <div class="card-lbl"><div class="lbl-icon">🌡️</div>তাপমাত্রা</div>
-        <div class="metric-val" style="color:#ff9500" id="m-temp">28°C</div>
-        <div class="metric-sub" id="m-temp-sub">DHT22 সেন্সর — পরিবেশের তাপমাত্রা</div>
-        <div class="bar-track"><div class="bar-fill" id="bar-temp" style="width:70%;background:linear-gradient(90deg,#ff9500,#ff6b35)"></div></div>
+        <div class="card-lbl"><div class="lbl-icon">🌡️</div>তাপমাত্রা
+          <span id="weather-src-badge" style="margin-left:auto;font-size:0.6rem;padding:2px 7px;border-radius:10px;background:rgba(77,166,255,0.1);border:1px solid rgba(77,166,255,0.2);color:var(--sky);font-weight:700;letter-spacing:0.04em;">লোড হচ্ছে...</span>
+        </div>
+        <div class="metric-val" style="color:#ff9500" id="m-temp">--°C</div>
+        <div class="metric-sub" id="m-temp-sub">Open-Meteo — পূর্বধলা, নেত্রকোণা</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-temp" style="width:0%;background:linear-gradient(90deg,#ff9500,#ff6b35)"></div></div>
       </div>
       <div class="card">
         <div class="card-lbl"><div class="lbl-icon">💦</div>আর্দ্রতা</div>
-        <div class="metric-val" style="color:var(--sky)" id="m-hum">85%</div>
-        <div class="metric-sub" id="m-hum-sub">DHT22 সেন্সর — বায়ুর আর্দ্রতা</div>
-        <div class="bar-track"><div class="bar-fill" id="bar-hum" style="width:85%;background:linear-gradient(90deg,#4da6ff,#0060d4)"></div></div>
+        <div class="metric-val" style="color:var(--sky)" id="m-hum">--%</div>
+        <div class="metric-sub" id="m-hum-sub">Open-Meteo — বায়ুর আর্দ্রতা</div>
+        <div class="bar-track"><div class="bar-fill" id="bar-hum" style="width:0%;background:linear-gradient(90deg,#4da6ff,#0060d4)"></div></div>
       </div>
       <div class="card">
         <div class="card-lbl"><div class="lbl-icon">🔋</div>ব্যাটারি</div>
@@ -927,7 +929,7 @@ body::after {
       <div class="loc-box">
         <div class="loc-label">অবস্থান</div>
         <div class="loc-val" id="loc-name">পূর্বধলা, নেত্রকোণা</div>
-        <div class="loc-sub">GPS: 24.7900° N, 90.5500° E</div>
+        <div class="loc-sub">GPS: 24.9333° N, 90.6028° E</div>
       </div>
       <div class="loc-box">
         <div class="loc-label">বিল / জলাশয়</div>
@@ -935,11 +937,15 @@ body::after {
         <div class="loc-sub" id="loc-water-sub">স্বাভাবিক পানির স্তর: ৪.২ মিটার</div>
       </div>
       <div class="loc-box">
-        <div class="loc-label">আবহাওয়া পূর্বাভাস</div>
-        <div class="loc-val" style="display:flex;align-items:center;gap:7px;" id="loc-weather">
-          <span>⛅</span> আংশিক মেঘলা
+        <div class="loc-label" style="display:flex;align-items:center;justify-content:space-between;">
+          আবহাওয়া পূর্বাভাস
+          <span style="font-size:0.6rem;color:var(--safe);font-weight:700" id="weather-live-tag">⬤ লাইভ</span>
         </div>
-        <div class="loc-sub" id="loc-weather-sub">বৃষ্টিপাতের সম্ভাবনা: ৪৫%</div>
+        <div class="loc-val" style="display:flex;align-items:center;gap:7px;" id="loc-weather">
+          <span id="loc-weather-ico">⏳</span> <span id="loc-weather-txt">লোড হচ্ছে...</span>
+        </div>
+        <div class="loc-sub" id="loc-weather-sub">বৃষ্টিপাতের সম্ভাবনা: লোড হচ্ছে...</div>
+        <div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap;" id="weather-extras"></div>
       </div>
     </div>
 
@@ -1108,11 +1114,11 @@ body::after {
         </div>
         <div class="edit-field">
           <label>GPS (Latitude)</label>
-          <input type="text" id="ed-lat" value="24.7900">
+          <input type="text" id="ed-lat" value="24.9333">
         </div>
         <div class="edit-field">
           <label>GPS (Longitude)</label>
-          <input type="text" id="ed-lng" value="90.5500">
+          <input type="text" id="ed-lng" value="90.6028">
         </div>
         <div class="edit-field">
           <label>স্বাভাবিক পানির স্তর</label>
@@ -1129,42 +1135,57 @@ body::after {
       </div>
     </div>
 
-    <!-- Sensor / Metric Settings -->
+    <!-- Sensor / Live Weather Info -->
     <div class="edit-section">
-      <div class="edit-section-title">🌡️ সেন্সর ডেটা সম্পাদনা</div>
-      <div class="edit-grid">
-        <div class="edit-field">
-          <label>তাপমাত্রা (°C)</label>
-          <input type="number" id="ed-temp" value="28" min="-10" max="60">
+      <div class="edit-section-title">🌡️ আবহাওয়া ও সেন্সর (লাইভ)</div>
+
+      <!-- Live weather display -->
+      <div style="background:rgba(0,232,122,0.05);border:1px solid rgba(0,232,122,0.15);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px;font-weight:600;letter-spacing:0.08em;">
+          🌍 Open-Meteo API — পূর্বধলা, নেত্রকোণা (লাইভ ডেটা)
         </div>
-        <div class="edit-field">
-          <label>আর্দ্রতা (%)</label>
-          <input type="number" id="ed-hum" value="85" min="0" max="100">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="admin-weather-grid">
+          <div style="text-align:center;">
+            <div style="font-size:0.65rem;color:var(--muted);margin-bottom:3px">তাপমাত্রা</div>
+            <div style="font-family:var(--font-ui);font-size:1.4rem;font-weight:800;color:#ff9500" id="aw-temp">--°C</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.65rem;color:var(--muted);margin-bottom:3px">আর্দ্রতা</div>
+            <div style="font-family:var(--font-ui);font-size:1.4rem;font-weight:800;color:var(--sky)" id="aw-hum">--%</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.65rem;color:var(--muted);margin-bottom:3px">বৃষ্টির সম্ভাবনা</div>
+            <div style="font-family:var(--font-ui);font-size:1.4rem;font-weight:800;color:var(--lilac)" id="aw-rain">--%</div>
+          </div>
         </div>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--muted);display:flex;align-items:center;justify-content:space-between;">
+          <span id="aw-condition">পরিস্থিতি লোড হচ্ছে...</span>
+          <span id="aw-updated" style="color:rgba(120,150,200,0.5)"></span>
+        </div>
+        <div style="margin-top:8px;font-size:0.68rem;color:rgba(120,150,200,0.4);font-style:italic;">
+          ⚠️ তাপমাত্রা ও আর্দ্রতা প্রকৃতির ডেটা — এডিট করা সম্ভব নয়
+        </div>
+      </div>
+
+      <!-- Only battery is editable -->
+      <div class="edit-grid" style="grid-template-columns:1fr 1fr;">
         <div class="edit-field">
-          <label>ব্যাটারি (%)</label>
+          <label>🔋 ব্যাটারি চার্জ (%)</label>
           <input type="number" id="ed-bat" value="92" min="0" max="100">
         </div>
         <div class="edit-field">
-          <label>আবহাওয়া পূর্বাভাস</label>
-          <input type="text" id="ed-weather" value="⛅ আংশিক মেঘলা">
-        </div>
-        <div class="edit-field">
-          <label>বৃষ্টিপাতের সম্ভাবনা</label>
-          <input type="text" id="ed-rain" value="৪৫%">
-        </div>
-        <div class="edit-field">
-          <label>তাপমাত্রা বার রঙ</label>
-          <select id="ed-temp-color">
-            <option value="orange" selected>কমলা</option>
-            <option value="red">লাল</option>
-            <option value="blue">নীল</option>
+          <label>📡 API রিফ্রেশ ইন্টারভাল</label>
+          <select id="ed-refresh">
+            <option value="300000">৫ মিনিট</option>
+            <option value="600000" selected>১০ মিনিট</option>
+            <option value="1800000">৩০ মিনিট</option>
           </select>
         </div>
       </div>
       <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
-        <button class="btn-save" onclick="saveSensor()">সংরক্ষণ করুন</button>
-        <span class="save-toast" id="toast-sensor">✅ সেন্সর তথ্য সংরক্ষিত!</span>
+        <button class="btn-save" onclick="saveBattery()">ব্যাটারি আপডেট করুন</button>
+        <button class="btn-notify" style="font-size:0.78rem;" onclick="fetchWeatherNow()">🔄 আবহাওয়া রিফ্রেশ</button>
+        <span class="save-toast" id="toast-sensor">✅ আপডেট হয়েছে!</span>
       </div>
     </div>
 
@@ -1631,29 +1652,103 @@ window.saveLocation = function() {
   setTimeout(() => t.style.display='none', 2200);
 };
 
-/* ───────── SENSOR SAVE ───────── */
-window.saveSensor = function() {
-  const temp = +document.getElementById('ed-temp').value;
-  const hum  = +document.getElementById('ed-hum').value;
-  const bat  = +document.getElementById('ed-bat').value;
+/* ───────── WEATHER API (Open-Meteo) ───────── */
+// WMO weather code → বাংলা + emoji
+function wmoToLabel(code) {
+  if (code === 0)           return { ico:'☀️',  txt:'পরিষ্কার আকাশ' };
+  if (code <= 2)            return { ico:'🌤️',  txt:'আংশিক মেঘলা' };
+  if (code === 3)           return { ico:'☁️',  txt:'সম্পূর্ণ মেঘলা' };
+  if (code <= 49)           return { ico:'🌫️',  txt:'কুয়াশাচ্ছন্ন' };
+  if (code <= 57)           return { ico:'🌦️',  txt:'হালকা বৃষ্টি' };
+  if (code <= 67)           return { ico:'🌧️',  txt:'বৃষ্টি' };
+  if (code <= 77)           return { ico:'🌨️',  txt:'তুষারপাত' };
+  if (code <= 82)           return { ico:'🌧️',  txt:'ভারী বর্ষণ' };
+  if (code <= 99)           return { ico:'⛈️',  txt:'বজ্রঝড়' };
+  return { ico:'🌡️', txt:'অজানা' };
+}
 
-  document.getElementById('m-temp').textContent = `${temp}°C`;
-  document.getElementById('m-hum').textContent  = `${hum}%`;
-  document.getElementById('m-bat').textContent  = `${bat}%`;
+async function fetchWeather() {
+  try {
+    const LAT = 24.9333, LON = 90.6028;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
+      `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature` +
+      `&hourly=precipitation_probability&timezone=Asia%2FDhaka&forecast_days=1`;
 
-  document.getElementById('bar-temp').style.width = `${Math.min(100,(temp/50)*100)}%`;
-  document.getElementById('bar-hum').style.width  = `${hum}%`;
-  document.getElementById('bar-bat').style.width  = `${bat}%`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const cur  = data.current;
 
-  document.getElementById('loc-weather').innerHTML =
-    `<span>⛅</span> ${document.getElementById('ed-weather').value}`;
-  document.getElementById('loc-weather-sub').textContent =
-    `বৃষ্টিপাতের সম্ভাবনা: ${document.getElementById('ed-rain').value}`;
+    const temp   = Math.round(cur.temperature_2m);
+    const feel   = Math.round(cur.apparent_temperature);
+    const hum    = cur.relative_humidity_2m;
+    const wind   = Math.round(cur.wind_speed_10m);
+    const wCode  = cur.weather_code;
+    // pick current-hour rain probability
+    const now    = new Date();
+    const hIdx   = now.getHours();
+    const rainPct= data.hourly?.precipitation_probability?.[hIdx] ?? '--';
+    const wLabel = wmoToLabel(wCode);
+    const updTime= now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
 
+    /* ── Public page ── */
+    // Temp
+    document.getElementById('m-temp').textContent      = `${temp}°C`;
+    document.getElementById('m-temp-sub').textContent  = `অনুভূতি: ${feel}°C • বায়ু: ${wind} কি.মি./ঘ.`;
+    document.getElementById('bar-temp').style.width    = `${Math.min(100, Math.max(5, (temp/50)*100))}%`;
+    // Hum
+    document.getElementById('m-hum').textContent       = `${hum}%`;
+    document.getElementById('m-hum-sub').textContent   = `বায়ুর আর্দ্রতা — পূর্বধলা`;
+    document.getElementById('bar-hum').style.width     = `${hum}%`;
+    // Weather box
+    document.getElementById('loc-weather-ico').textContent = wLabel.ico;
+    document.getElementById('loc-weather-txt').textContent = wLabel.txt;
+    document.getElementById('loc-weather-sub').textContent = `বৃষ্টিপাতের সম্ভাবনা: ${rainPct}% • বায়ু: ${wind} কি.মি./ঘ.`;
+    document.getElementById('weather-extras').innerHTML =
+      `<span style="font-size:0.65rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.07)">💨 ${wind} কি.মি./ঘ.</span>` +
+      `<span style="font-size:0.65rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.07)">🤔 অনুভূতি ${feel}°C</span>` +
+      `<span style="font-size:0.65rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.07)">🕐 ${updTime}</span>`;
+    // Badge
+    const badge = document.getElementById('weather-src-badge');
+    if (badge) { badge.textContent='⬤ লাইভ'; badge.style.background='rgba(0,232,122,0.1)'; badge.style.borderColor='rgba(0,232,122,0.3)'; badge.style.color='var(--safe)'; }
+
+    /* ── Admin page ── */
+    const awT = document.getElementById('aw-temp');
+    const awH = document.getElementById('aw-hum');
+    const awR = document.getElementById('aw-rain');
+    const awC = document.getElementById('aw-condition');
+    const awU = document.getElementById('aw-updated');
+    if (awT) awT.textContent = `${temp}°C`;
+    if (awH) awH.textContent = `${hum}%`;
+    if (awR) awR.textContent = `${rainPct}%`;
+    if (awC) awC.textContent = `${wLabel.ico} ${wLabel.txt} • বায়ু ${wind} কি.মি./ঘ.`;
+    if (awU) awU.textContent = `আপডেট: ${updTime}`;
+
+  } catch(err) {
+    console.warn('Weather fetch failed:', err);
+    const badge = document.getElementById('weather-src-badge');
+    if (badge) { badge.textContent='অফলাইন'; badge.style.color='var(--danger)'; }
+    document.getElementById('loc-weather-ico').textContent = '❓';
+    document.getElementById('loc-weather-txt').textContent = 'আবহাওয়া ডেটা পাওয়া যাচ্ছে না';
+    document.getElementById('loc-weather-sub').textContent = 'ইন্টারনেট সংযোগ পরীক্ষা করুন';
+  }
+}
+window.fetchWeatherNow = fetchWeather;
+
+/* ───────── BATTERY SAVE ───────── */
+window.saveBattery = function() {
+  const bat = Math.max(0, Math.min(100, +document.getElementById('ed-bat').value));
+  document.getElementById('m-bat').textContent = `${bat}%`;
+  const col = bat > 60 ? 'var(--safe)' : bat > 30 ? 'var(--warn)' : 'var(--danger)';
+  document.getElementById('m-bat').style.color = col;
+  document.getElementById('bar-bat').style.width = `${bat}%`;
   const t = document.getElementById('toast-sensor');
-  t.style.display = 'inline-block';
-  setTimeout(() => t.style.display='none', 2200);
+  t.style.display='inline-block';
+  setTimeout(()=>t.style.display='none',2200);
 };
+
+/* ───────── SENSOR SAVE (legacy alias) ───────── */
+window.saveSensor = window.saveBattery;
 
 /* ───────── INSTRUCTIONS SAVE ───────── */
 window.saveInstructions = function() {
@@ -1719,6 +1814,8 @@ window.addEventListener('resize', () => {
 
 /* ───────── INIT ───────── */
 updateDash(5);
+fetchWeather(); // প্রথমবার তাৎক্ষণিক
+setInterval(fetchWeather, 600000); // প্রতি ১০ মিনিটে রিফ্রেশ
 </script>
 </body>
 </html>
