@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>অফলাইন — বন্যা পর্যবেক্ষণ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans Bengali', sans-serif;
+    background: #020b18; color: #e8f0ff;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+  }
+  .wrap { max-width: 320px; }
+  .icon { font-size: 4rem; margin-bottom: 20px; }
+  h1 { font-size: 1.4rem; font-weight: 800; color: #00aaff; margin-bottom: 12px; }
+  p { font-size: 0.9rem; color: #7a90b0; line-height: 1.7; margin-bottom: 24px; }
+  button {
+    background: rgba(0,170,255,0.15); border: 1px solid rgba(0,170,255,0.3);
+    color: #00aaff; font-family: inherit; font-size: 0.9rem; font-weight: 700;
+    padding: 12px 28px; border-radius: 12px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="icon">📡</div>
+    <h1>ইন্টারনেট সংযোগ নেই</h1>
+    <p>বন্যা পর্যবেক্ষণ ড্যাশবোর্ড চালু করতে ইন্টারনেট সংযোগ প্রয়োজন।<br>সংযোগ ঠিক হলে পুনরায় চেষ্টা করুন।</p>
+    <button onclick="location.reload()">🔄 আবার চেষ্টা করুন</button>
+  </div>
+</body>
+</html>
