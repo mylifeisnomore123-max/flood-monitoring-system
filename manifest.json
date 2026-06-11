@@ -1,25 +1,91 @@
 {
-  "name": "আইওটি বন্যা পর্যবেক্ষণ ব্যবস্থা",
+  "name": "বন্যা পর্যবেক্ষণ — পূর্বধলা",
   "short_name": "বন্যা মনিটর",
-  "description": "রিয়েল-টাইম বন্যা পর্যবেক্ষণ ও আগাম সতর্কীকরণ ব্যবস্থা",
-  "start_url": "/flood-monitoring-system/",
-  "scope": "/flood-monitoring-system/",
+  "description": "আইওটি স্মার্ট বন্যা পর্যবেক্ষণ ও সতর্কীকরণ ব্যবস্থা — রাজধলা বিল, পূর্বধলা, নেত্রকোণা",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020b18",
-  "theme_color": "#00aaff",
+  "background_color": "#060e1c",
+  "theme_color": "#0a1628",
   "orientation": "portrait-primary",
+  "lang": "bn",
+  "dir": "ltr",
+  "scope": "./",
+  "categories": ["utilities", "weather"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/dashboard.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "ড্যাশবোর্ড — রিয়েল-টাইম বন্যা পর্যবেক্ষণ"
+    },
+    {
+      "src": "screenshots/mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "মোবাইল ভিউ"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "লাইভ ড্যাশবোর্ড",
+      "short_name": "ড্যাশবোর্ড",
+      "description": "রিয়েল-টাইম পানির স্তর দেখুন",
+      "url": "./index.html#dashboard",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
